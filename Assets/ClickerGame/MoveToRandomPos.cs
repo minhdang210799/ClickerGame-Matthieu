@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Move : MonoBehaviour
+public class MoveToRandomPos : MonoBehaviour
 {
     public float speed;
     Vector3 destination;
