@@ -14,10 +14,15 @@ public class Player : MonoBehaviour
     public float shootDelay;
     float shootTimer;
     public UnityEvent onShoot;
+    public int bulletCount = 1;
+    public float bulletSpread;
 
     // Restrictions
     float boundaryX;
     float boundaryY;
+
+    [Header("Effects")]
+    public ParticleSystem shootParticle;
 
     // Start is called before the first frame update
     void Start()
@@ -59,11 +64,32 @@ public class Player : MonoBehaviour
 
         shootTimer = shootDelay;
 
-        onShoot.Invoke();
+        Instantiate(shootParticle, transform.position + new Vector3(0, 0.5f), Quaternion.identity);
 
-        GameObject _bullet = Instantiate(bullet, transform.position + Vector3.up, transform.rotation);
-        Vector3 direction = transform.position + Vector3.up - transform.position;
-        _bullet.GetComponent<Move>().direction = direction;
+        if (bulletCount <= 1)
+        {
+            GameObject _bullet = Instantiate(bullet, transform.position + Vector3.up * 2, transform.rotation);
+            Vector3 direction = transform.up;
+            _bullet.GetComponent<Move>().direction = direction;
+        }
+        /*else
+        {
+            transform.rotation = Quaternion.Euler(0, 0, transform.eulerAngles.z - bulletSpread / 2);
+            Debug.Log(transform.eulerAngles.z - (bulletSpread / 2));
+            for (int i = 0; i < bulletCount; i++)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + bulletSpread);
+                Debug.Log(transform.rotation.eulerAngles.z + bulletSpread);
+                Instantiate(bullet, transform.position + Vector3.up * 2, transform.rotation).GetComponent<Move>().direction = transform.up;
+                //Vector3 direction = transform.up;
+                //_bullet.GetComponent<Move>().direction = direction;
+            }
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+
+            //Instantiate(bullet, transform.position + Vector3.up * 2, transform.rotation).GetComponent<Move>().direction = transform.up;
+        }*/
+
+        onShoot.Invoke();
     }
 
     // Makes sure the player doesn't go off screen.

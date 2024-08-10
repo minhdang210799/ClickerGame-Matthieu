@@ -11,6 +11,8 @@ public class Damage : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.collider.CompareTag("Bullet")) return;
+
         if (collision.collider.TryGetComponent(out Health health))
         {
             health.Damage(damage);
