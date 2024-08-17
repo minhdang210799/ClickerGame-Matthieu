@@ -13,7 +13,6 @@ public class Player : MonoBehaviour
     public GameObject bullet;
     public float shootDelay;
     float shootTimer;
-    public UnityEvent onShoot;
     public int bulletCount = 1;
     public float bulletSpread;
 
@@ -23,6 +22,11 @@ public class Player : MonoBehaviour
 
     [Header("Effects")]
     public ParticleSystem shootParticle;
+    public AudioClip shootSound;
+
+    [Header("Powerups")]
+    float startShootSpeed;
+    int startBulletCount;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +34,9 @@ public class Player : MonoBehaviour
         Camera cam = Camera.main;
         boundaryX = cam.orthographicSize * cam.aspect - 0.5f;
         boundaryY = cam.orthographicSize - 0.5f;
+
+        startShootSpeed = shootDelay;
+        startBulletCount = bulletCount;
     }
 
     // Update is called once per frame
@@ -68,28 +75,26 @@ public class Player : MonoBehaviour
 
         if (bulletCount <= 1)
         {
-            GameObject _bullet = Instantiate(bullet, transform.position + Vector3.up * 2, transform.rotation);
+            GameObject _bullet = Instantiate(bullet, transform.position + Vector3.up * 0.5f, transform.rotation);
             Vector3 direction = transform.up;
             _bullet.GetComponent<Move>().direction = direction;
+            Destroy(_bullet, 5f);
         }
-        /*else
+        else
         {
-            transform.rotation = Quaternion.Euler(0, 0, transform.eulerAngles.z - bulletSpread / 2);
-            Debug.Log(transform.eulerAngles.z - (bulletSpread / 2));
+            transform.Rotate(0, 0, -(bulletSpread / 2));
             for (int i = 0; i < bulletCount; i++)
             {
-                transform.rotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + bulletSpread);
-                Debug.Log(transform.rotation.eulerAngles.z + bulletSpread);
-                Instantiate(bullet, transform.position + Vector3.up * 2, transform.rotation).GetComponent<Move>().direction = transform.up;
-                //Vector3 direction = transform.up;
-                //_bullet.GetComponent<Move>().direction = direction;
+                GameObject _bullet = Instantiate(bullet, transform.position + Vector3.up * 0.5f, transform.rotation);
+                Vector3 direction = transform.up;
+                _bullet.GetComponent<Move>().direction = direction;
+                transform.Rotate(0, 0, bulletSpread / (bulletCount - 1));
+                Destroy(_bullet, 5f);
             }
             transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
 
-            //Instantiate(bullet, transform.position + Vector3.up * 2, transform.rotation).GetComponent<Move>().direction = transform.up;
-        }*/
-
-        onShoot.Invoke();
+        AudioManager.instance.PlaySound(shootSound);
     }
 
     // Makes sure the player doesn't go off screen.
@@ -111,5 +116,25 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, -boundaryY);
         }
+    }
+
+    public void SetFirerate(float firerate)
+    {
+        shootDelay = firerate;
+    }
+
+    public void ResetFirerate()
+    {
+        shootDelay = startShootSpeed;
+    }
+
+    public void SetBulletCount(int bullets)
+    {
+        bulletCount = bullets;
+    }
+
+    public void ResetBulletCount()
+    {
+        bulletCount = startBulletCount;
     }
 }

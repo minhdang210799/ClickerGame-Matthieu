@@ -7,6 +7,8 @@ public class SpawnEnemy : MonoBehaviour
 {
     public GameObject enemy;
 
+    public GameObject[] powerups;
+
     float boundaryX;
 
     public float spawnInterval;
@@ -25,7 +27,18 @@ public class SpawnEnemy : MonoBehaviour
         if (timer >= spawnInterval)
         {
             float ranX = Random.Range(-boundaryX, boundaryX);
-            Instantiate(enemy, new Vector3(ranX, transform.position.y), Quaternion.identity);
+
+            bool isPowerup = Random.Range(0, 10) == 1;
+
+            if (!isPowerup)
+            {
+                Instantiate(enemy, new Vector3(ranX, transform.position.y), Quaternion.identity);
+            }
+            else
+            {
+                int randomPower = Random.Range(0, powerups.Length);
+                Instantiate(powerups[randomPower], new Vector3(ranX, transform.position.y), Quaternion.identity);
+            }
 
             timer = 0;
         }

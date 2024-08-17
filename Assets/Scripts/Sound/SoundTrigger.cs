@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class SoundTrigger : MonoBehaviour
 {
     public AudioClip[] clips;
@@ -28,6 +29,7 @@ public class SoundTrigger : MonoBehaviour
             return;
         }
 
+        audioSource.enabled = true;
         audioSource.clip = clips[clip];
         audioSource.Play();
     }
